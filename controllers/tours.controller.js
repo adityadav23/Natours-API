@@ -14,8 +14,28 @@ async function getAllTours(req, res){
 
 }
 
+async function getTour(req, res){
+    res.send('1 TOur')
+}
+
+async function createTour(req, res){
+    res.send('Tour created')
+}
+
+async function updateTour(req, res){
+    res.send('Tour updated')
+}
+
+async function deleteTour(req, res){
+    res.send('Tour deleted')
+}
+
 
 
 module.exports = {
     getAllTours,
+    getTour,
+    createTour,
+    updateTour,
+    deleteTour,
 }
