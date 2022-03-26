@@ -1,5 +1,4 @@
 require('dotenv').config()
-const mongoose = require('mongoose')
 const fs = require('fs')
 const {connectDb} = require('../../db/connect')
 const Tour = require('../../models/tours.model')
