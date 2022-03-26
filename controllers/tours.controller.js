@@ -12,7 +12,7 @@ async function getAllTours(req, res){
         })
        
    } catch (error) {
-       return res.status(400).json({
+       return res.status(404).json({
          status: "failed",
          message: error,
     })
@@ -31,7 +31,7 @@ async function getTour(req, res){
          })
         
     } catch (error) {
-        return res.status(400).json({
+        return res.status(404).json({
           status: "failed",
           message: error,
      })
@@ -48,7 +48,7 @@ async function createTour(req, res){
             }
         })
     } catch (error) {
-       return res.status(400).json({
+       return res.status(404).json({
             status: "failed",
             message: 'Invalid input sent',
         })
@@ -56,11 +56,45 @@ async function createTour(req, res){
 }
 
 async function updateTour(req, res){
-    res.send('Tour updated')
+    try {
+        const tour = await Tour.findByIdAndUpdate(req.params.id,
+             req.body,
+             {
+                 new: true,
+                runValidators: true
+             },
+            )
+         return res.status(200).json({
+             success: "true",
+             data:{
+                 tour
+             }
+         })
+        
+    } catch (error) {
+        return res.status(404).json({
+          status: "failed",
+          message: error,
+        })
+    }
 }
 
 async function deleteTour(req, res){
-    res.send('Tour deleted')
+    try {
+        await Tour.findByIdAndDelete(req.params.id)
+            
+         return res.status(204).json({
+             data: null,
+             success: true
+         })
+        
+    } catch (error) {
+        return res.status(404).json({
+          status: "failed",
+          message: error,
+        })
+    }
+
 }
 
 
