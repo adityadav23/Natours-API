@@ -1,4 +1,5 @@
 const fs = require('fs')
+const tours = require('../models/tours.model')
 
 async function getAllTours(req, res){
     const tours = JSON.parse(
@@ -15,11 +16,24 @@ async function getAllTours(req, res){
 }
 
 async function getTour(req, res){
-    res.send('1 TOur')
+    res.send('1 Tour')
 }
 
 async function createTour(req, res){
-    res.send('Tour created')
+    try {
+        const newTour = await tours.create(req.body)
+        return res.status(201).json({
+            status: "success",
+            data:{
+                tour: newTour
+            }
+        })
+    } catch (error) {
+       return res.status(400).json({
+            status: "failed",
+            message: 'Invalid input sent',
+        })
+    }
 }
 
 async function updateTour(req, res){
