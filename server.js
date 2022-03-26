@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000
 const server = http.createServer(app)
 
 async function startServer(){
-    await(connectDb(process.env.MONGO_URI))
+    await connectDb(process.env.MONGO_URI)
 
     server.listen(PORT, ()=>{
     console.log(`Listening on port ${PORT}...`)
