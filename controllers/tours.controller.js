@@ -28,6 +28,20 @@ async function getAllTours(req, res){
         }else{
             query = query.select('-__v')
         }
+
+        //Pagination
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 10
+        const skip = (page-1)*limit
+
+        query = query.skip(skip).limit(limit)
+        //check if number of tours are less than skip
+        if(req.query.page){
+            const numOfTours = await Tour.countDocuments()
+            if(skip >= numOfTours) throw new Error('This page oes ot exist!!')
+        }else{
+            
+        }
        const tours = await query
 
         return res.status(200).json({
