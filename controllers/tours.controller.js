@@ -57,7 +57,7 @@ async function createTour(req, res){
     } catch (error) {
        return res.status(404).json({
             status: "failed",
-            message: 'Invalid input sent',
+            message: error,
         })
     }
 }
