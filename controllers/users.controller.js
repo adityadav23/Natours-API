@@ -1,5 +1,12 @@
+const User = require('../models/users.model')
+
 async function getAllUsers(req, res){
-    res.send('All users')
+try{
+
+}catch(error){
+
+}
+
 }
 
 async function getUser(req, res){
