@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema({
                 message: 'Passwords are not the same!'
             
         }
+    },
+    passwordChangedAt:{
+        type: Date,
+        default: Date.now()
     }
 })
 
@@ -59,5 +63,17 @@ userSchema.methods.createToken = async function(id){
         expiresIn: process.env.JWT_EXPIRES_IN
     })
     return token
+}
+
+userSchema.methods.changedPasswordAfter = async function(JWTTimestamp){
+    if(this.passwordChangedAt){
+        const changedTimestamp = parseInt(
+            this.passwordChangedAt.getTime()/1000,
+            10
+        )
+        return JWTTimestamp < changedTimestamp
+    }
+    //False mean not changed
+    return false;
 }
 module.exports = mongoose.model('User', userSchema)
