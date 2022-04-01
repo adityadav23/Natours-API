@@ -1,3 +1,4 @@
+const AppError = require('../utils/appError')
 const User = require('../models/users.model')
 const jwt = require('jsonwebtoken')
 
@@ -10,10 +11,8 @@ async function signUp(req, res){
         passwordConfirm: req.body.passwordConfirm,
       })
 
-    const token = jwt.sign({id: newUser._id},
-        process.env.JWT_SECRET,{
-            expiresIn: process.env.JWT_EXPIRES_IN
-        })
+    const token = await newUser.createToken(newUser._id)
+    
     res.status(201).json({
         status: 'success',
         token,
@@ -26,11 +25,45 @@ async function signUp(req, res){
     res.status(400).json({
         status: 'Failed to create new User',
         message: error
-    }
-    )
+        })
     console.log(error)
-}
+    }
 
 }
 
-module.exports = {signUp,}
+async function login(req, res, next){
+    try {
+        const { email, password} = req.body
+
+        if(!password || !email){
+           return next(new AppError('Please provide email and passsword',400))
+        }
+
+        const user = await User.findOne({email}).select('+password')
+
+        if(!user){
+            return next(new AppError('No matching email found',404))
+         }
+
+         const isCorrect =  await user.correctPassword(password, user.password)
+
+         if(!isCorrect){
+            return next(new AppError('Please put correct password',401))
+         }
+         
+
+        const token = await user.createToken(user._id)
+
+        res.status(200).json({
+            status:'success',
+            token
+        })
+
+    } catch (error) {
+        
+    }
+}
+
+
+
+module.exports = {signUp, login}
