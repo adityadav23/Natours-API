@@ -185,10 +185,34 @@ async function resetPassword(req, res, next){
      token
  })
 }
+
+async function updatePassword(req, res, next){
+ // 1) Get user from collection
+    const user = await User.findById(req.user.id).select('+password');
+
+  // 2) Check if POSTed current password is correct
+    if(!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+        return next(new AppError('Your current password is wrong.', 401));
+    }
+
+  // 3) If so, update password
+    user.password = req.body.password;
+    user.passwordConfirm = req.body.passwordConfirm;
+    await user.save();
+
+  // 4) Log user in, send JWT
+    const token = await user.createToken(user._id)
+
+    res.status(200).json({
+     status:'success',
+     token
+ })
+}
 module.exports = {signUp, 
     login,
     protect,
     restrictTo,
     forgotPassword,
     resetPassword,
+    updatePassword,
 }
