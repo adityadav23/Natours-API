@@ -2,6 +2,7 @@ const AppError = require('../utils/appError')
 const User = require('../models/users.model')
 const jwt = require('jsonwebtoken')
 const sendEmail = require('../utils/email')
+const crypto = require('crypto')
 
 async function signUp(req, res){
     try {
@@ -99,7 +100,7 @@ async function login(req, res, next){
     }
  }
 
-  const restrictTo = (...roles) =>{
+const restrictTo = (...roles) =>{
       
       return (req, res, next)=>{
         if(!roles.includes(req.user.role)){
@@ -153,7 +154,36 @@ async function forgotPassword(req, res, next){
 }
  
 async function resetPassword(req, res, next){
-     
+   
+  // 1) Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetTokenExpires: { $gt: Date.now() }
+  });
+
+  // 2) If token has not expired, and there is user, set the new password
+  if (!user) {
+    return next(new AppError('Token is invalid or has expired', 400));
+  }
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetTokenExpires = undefined;
+  await user.save();
+
+
+  // 4) Log the user in, send JWT get token
+ const token = await user.createToken(user._id)
+
+ res.status(200).json({
+     status:'success',
+     token
+ })
 }
 module.exports = {signUp, 
     login,
