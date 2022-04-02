@@ -208,6 +208,7 @@ async function updatePassword(req, res, next){
      token
  })
 }
+
 module.exports = {signUp, 
     login,
     protect,

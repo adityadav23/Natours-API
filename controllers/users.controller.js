@@ -3,7 +3,15 @@ const AppError = require('../utils/appError')
 
 async function getAllUsers(req, res){
 try{
+  const users = await User.find()
 
+  res.status(200).json({
+      status: "success",
+      data:{
+          users
+      }
+
+  })
 }catch(error){
 
 }
@@ -57,6 +65,20 @@ async function updateMe(req,res, next){
 }
 
 
+async function deleteMe(req, res, next){
+
+    await User.findByIdAndUpdate(req.user.id,
+        {
+            active: false
+        },
+        )
+
+    res.status(204).json({
+        status: "success",
+        data: null
+    })
+}
+
 module.exports = {
     getAllUsers,
     getUser,
@@ -64,4 +86,5 @@ module.exports = {
     updateUser,
     deleteUser,
     updateMe,
+    deleteMe,
 }
