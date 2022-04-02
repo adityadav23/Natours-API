@@ -101,7 +101,6 @@ async function login(req, res, next){
   const restrictTo = (...roles) =>{
       
       return (req, res, next)=>{
-        console.log(req.user.role)
         if(!roles.includes(req.user.role)){
         return next(new AppError('You do not have permission to accesss this route',403))
         }
