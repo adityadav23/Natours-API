@@ -10,7 +10,8 @@ const  {getAllUsers,
 
 const {signUp,
     login,
-    protect,} = require('../controllers/authController')
+    protect,
+    restrictTo,} = require('../controllers/authController')
 
 const router = express.Router()
 
@@ -18,6 +19,9 @@ const router = express.Router()
 router.route('/signup').post(signUp)
 router.route('/login').post(login)
 router.route('/').get(protect,getAllUsers).post(createUser)
-router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser)
+router.route('/:id').get(getUser).patch(updateUser)
+    .delete(protect,
+    restrictTo('admin','lead-guide'),
+    deleteUser)
 
 module.exports = router
