@@ -30,7 +30,7 @@ async function getAllTours(req, res){
 
 async function getTour(req, res,next){
     try {
-        const tour = await Tour.findById(req.params.id)
+        const tour = await Tour.findById(req.params.id).populate('reviews')
         
         if(!tour){
           return  next(new AppError('No tour found with that ID',404))
