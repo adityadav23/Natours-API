@@ -9,6 +9,7 @@ const hpp = require('hpp')
 
 const toursRouter = require('./routes/tours.router')
 const usersRouter = require('./routes/users.router')
+const reviewsRouter = require('./routes/reviews.router')
 
 const notFound = require('./middleware/not-found')
 const errorHandler = require('./middleware/error-handler')
@@ -40,6 +41,8 @@ app.use(express.static(`${__dirname}/public`))
 
 app.use('/api/v1/tours' , toursRouter)
 app.use('/api/v1/users', usersRouter )
+app.use('/api/v1/reviews', reviewsRouter )
+
 
 app.use(notFound)
 app.use(errorHandler)
