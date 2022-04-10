@@ -13,8 +13,10 @@ async function getAllReviews(req, res){
 }
 
 async function createReview(req, res){
-    const newReview = await Review.create(req.body)
+    if(!req.body.tour) req.body.tour = req.params.tourId
+    if(!req.body.user) req.body.user = req.user.id
 
+    const newReview = await Review.create(req.body)
 
     res.status(201).json({
         status: 'Success',

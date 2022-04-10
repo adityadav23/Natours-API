@@ -6,7 +6,7 @@ const {getAllReviews,
 
 
 
-const router = express.Router()
+const router = express.Router({mergeParams : true})
 
 router.route('/').get(getAllReviews).post(protect, restrictTo('user') ,createReview)
 
